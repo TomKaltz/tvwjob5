@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { token, clearToken } = useAuthToken()
+const { token } = useAuthToken()
 const { isConnected, showSpinner, state: wsState } = useWebSocketConnection()
 
 const health = ref<unknown>(null)
@@ -20,27 +20,12 @@ watch(
   },
   { immediate: true }
 )
-
-async function logout() {
-  clearToken()
-  await $fetch('/api/auth/logout', { method: 'POST' })
-  await navigateTo('/login')
-}
-
-onMounted(() => {
-  if (!token.value) {
-    navigateTo('/login')
-  }
-})
 </script>
 
 <template>
   <div class="home">
     <div class="inner">
-      <header>
-        <h1>tvw</h1>
-        <button type="button" class="link" @click="logout">Sign out</button>
-      </header>
+      <h1 class="title">Health</h1>
 
       <p class="meta">
         WebSocket: <strong>{{ wsState }}</strong>
@@ -56,38 +41,19 @@ onMounted(() => {
 
 <style scoped>
 .home {
-  min-height: 100dvh;
-  background: #09090b;
   color: #fafafa;
-  padding: 1.5rem;
 }
 .inner {
-  max-width: 36rem;
+  max-width: 42rem;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-h1 {
+.title {
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
-}
-.link {
-  background: none;
-  border: none;
-  color: #a1a1aa;
-  font-size: 0.875rem;
-  cursor: pointer;
-}
-.link:hover {
-  color: #e4e4e7;
 }
 .meta {
   font-size: 0.875rem;
