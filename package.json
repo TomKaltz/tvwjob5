@@ -1,0 +1,34 @@
+{
+  "name": "tvwjob5",
+  "version": "1.0.0",
+  "private": true,
+  "description": "tvw — tk-dcb framework + Nuxt + tRPC WebSocket (barebones)",
+  "scripts": {
+    "clean": "find . -type d \\( -name 'dist' -o -name '.nuxt' -o -name '.output' \\) ! -path '*/node_modules/*' -exec rm -rf {} + 2>/dev/null || true",
+    "dev": "pnpm run dev:kill; turbo run dev --parallel",
+    "dev:kill": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true; pkill -f 'pnpm.*--filter.*tvw-frontend.*dev' 2>/dev/null || true",
+    "dev:frontend": "pnpm --filter tvw-frontend dev",
+    "dev:domain": "pnpm --filter tvw-domain dev",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck"
+  },
+  "engines": {
+    "node": ">=25.0.0"
+  },
+  "packageManager": "pnpm@10.29.2",
+  "pnpm": {
+    "overrides": {
+      "@nuxt/kit": "^4.2.1",
+      "@tk-dcb/framework": "file:../../2025/tk-dcb/packages/tk-dcb-framework"
+    },
+    "onlyBuiltDependencies": [
+      "argon2",
+      "esbuild",
+      "@parcel/watcher"
+    ]
+  },
+  "devDependencies": {
+    "turbo": "^2.8.20",
+    "typescript": "^5.9.3"
+  }
+}

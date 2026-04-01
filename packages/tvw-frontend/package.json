@@ -1,0 +1,30 @@
+{
+  "name": "tvw-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "start": "node .output/server/index.mjs",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@tk-dcb/framework": "1.0.0",
+    "@trpc/client": "^11.10.0",
+    "@trpc/server": "^11.10.0",
+    "argon2": "^0.44.0",
+    "jsonwebtoken": "^9.0.3",
+    "nuxt": "^4.3.1",
+    "postgres": "^3.4.8",
+    "tvw-domain": "workspace:*",
+    "typescript": "^5.9.3",
+    "ws": "^8.19.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "vue-tsc": "^2.2.10"
+  }
+}

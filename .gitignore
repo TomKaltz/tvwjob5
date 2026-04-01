@@ -1,0 +1,15 @@
+node_modules/
+.pnpm-store/
+dist/
+.nuxt/
+.output/
+.turbo/
+*.tsbuildinfo
+typescript-trace/
+.env
+.env.*
+!.env.example
+# Versioned symlink: packages/tvw-frontend/.env → ../../.env
+!packages/tvw-frontend/.env
+.DS_Store
+*.log

@@ -1,0 +1,19 @@
+{
+  "name": "tvw-domain",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Minimal tk-dcb application (no feature slices)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch --preserveWatchOutput",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tk-dcb/framework": "1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
