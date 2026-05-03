@@ -40,8 +40,8 @@ importers:
         specifier: 1.0.5
         version: 1.0.5(typescript@5.9.3)(zod-openapi@5.4.6(zod@4.3.6))
       '@tk-dcb/nuxt':
-        specifier: 0.1.0
-        version: 0.1.0(magicast@0.5.2)(nuxt@4.4.2(@babel/core@7.29.0)(@babel/plugin-syntax-jsx@7.28.6(@babel/core@7.29.0))(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@parcel/watcher@2.5.6)(@types/node@25.5.0)(@vue/compiler-sfc@3.5.33)(cac@6.7.14)(db0@0.3.4)(ioredis@5.10.1)(magicast@0.5.2)(rollup-plugin-visualizer@7.0.1(rollup@4.60.1))(rollup@4.60.1)(terser@5.46.1)(typescript@5.9.3)(vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))(vue-tsc@2.2.12(typescript@5.9.3))(yaml@2.8.3))
+        specifier: 0.1.1
+        version: 0.1.1(magicast@0.5.2)(nuxt@4.4.2(@babel/core@7.29.0)(@babel/plugin-syntax-jsx@7.28.6(@babel/core@7.29.0))(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@parcel/watcher@2.5.6)(@types/node@25.5.0)(@vue/compiler-sfc@3.5.33)(cac@6.7.14)(db0@0.3.4)(ioredis@5.10.1)(magicast@0.5.2)(rollup-plugin-visualizer@7.0.1(rollup@4.60.1))(rollup@4.60.1)(terser@5.46.1)(typescript@5.9.3)(vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))(vue-tsc@2.2.12(typescript@5.9.3))(yaml@2.8.3))
       '@trpc/client':
         specifier: ^11.10.0
         version: 11.16.0(@trpc/server@11.16.0(typescript@5.9.3))(typescript@5.9.3)
@@ -1294,8 +1294,8 @@ packages:
   '@tk-dcb/framework@1.0.5':
     resolution: {integrity: sha512-b3WprTmFxK5xJpaw72vfIRcmP3a/Ky0qzQWwYbF9ux3oDJaLFXPD4dLavKdcYRe78/s/xA0L0lVMDxzRxGe4hw==, tarball: https://onedev-o10ihus3n4bo8io6dqcbh5m0.tomkaltz.com/tk-dcb/~npm/@tk-dcb%2Fframework/-/1.0.5/@tk-dcb%2Fframework-1.0.5.tgz}
 
-  '@tk-dcb/nuxt@0.1.0':
-    resolution: {integrity: sha512-ljW/KzypJ5/STtSDI8zLU7CEQVHDe27aW/gY92K9OObwJn16tb5oqFpISpEU8HN/Nud8OliXIlDH3Tf46GPRvA==, tarball: https://onedev-o10ihus3n4bo8io6dqcbh5m0.tomkaltz.com/tk-dcb/~npm/@tk-dcb%2Fnuxt/-/0.1.0/@tk-dcb%2Fnuxt-0.1.0.tgz}
+  '@tk-dcb/nuxt@0.1.1':
+    resolution: {integrity: sha512-B7p1s6uD7tYHrkNYAleCJJG8rN+DHyvCxIjeZZtI/zhP0RP1eDce5HjtkNK0HOpDA/mSiXro96swNLzBL9Ro3w==, tarball: https://onedev-o10ihus3n4bo8io6dqcbh5m0.tomkaltz.com/tk-dcb/~npm/@tk-dcb%2Fnuxt/-/0.1.1/@tk-dcb%2Fnuxt-0.1.1.tgz}
     peerDependencies:
       nuxt: ^4.0.0
 
@@ -4958,7 +4958,7 @@ snapshots:
       - utf-8-validate
       - zod-openapi
 
-  '@tk-dcb/nuxt@0.1.0(magicast@0.5.2)(nuxt@4.4.2(@babel/core@7.29.0)(@babel/plugin-syntax-jsx@7.28.6(@babel/core@7.29.0))(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@parcel/watcher@2.5.6)(@types/node@25.5.0)(@vue/compiler-sfc@3.5.33)(cac@6.7.14)(db0@0.3.4)(ioredis@5.10.1)(magicast@0.5.2)(rollup-plugin-visualizer@7.0.1(rollup@4.60.1))(rollup@4.60.1)(terser@5.46.1)(typescript@5.9.3)(vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))(vue-tsc@2.2.12(typescript@5.9.3))(yaml@2.8.3))':
+  '@tk-dcb/nuxt@0.1.1(magicast@0.5.2)(nuxt@4.4.2(@babel/core@7.29.0)(@babel/plugin-syntax-jsx@7.28.6(@babel/core@7.29.0))(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@parcel/watcher@2.5.6)(@types/node@25.5.0)(@vue/compiler-sfc@3.5.33)(cac@6.7.14)(db0@0.3.4)(ioredis@5.10.1)(magicast@0.5.2)(rollup-plugin-visualizer@7.0.1(rollup@4.60.1))(rollup@4.60.1)(terser@5.46.1)(typescript@5.9.3)(vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))(vue-tsc@2.2.12(typescript@5.9.3))(yaml@2.8.3))':
     dependencies:
       '@nuxt/kit': 4.4.2(magicast@0.5.2)
       nuxt: 4.4.2(@babel/core@7.29.0)(@babel/plugin-syntax-jsx@7.28.6(@babel/core@7.29.0))(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@parcel/watcher@2.5.6)(@types/node@25.5.0)(@vue/compiler-sfc@3.5.33)(cac@6.7.14)(db0@0.3.4)(ioredis@5.10.1)(magicast@0.5.2)(rollup-plugin-visualizer@7.0.1(rollup@4.60.1))(rollup@4.60.1)(terser@5.46.1)(typescript@5.9.3)(vite@7.3.1(@types/node@25.5.0)(jiti@2.6.1)(terser@5.46.1)(yaml@2.8.3))(vue-tsc@2.2.12(typescript@5.9.3))(yaml@2.8.3)
