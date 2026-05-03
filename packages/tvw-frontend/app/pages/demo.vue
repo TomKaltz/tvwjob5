@@ -1,21 +1,40 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import {
+  partitionKeyFromFeedItem,
+  useAddDemoEntity,
+  useTvwDemoFeedList,
+} from '~/composables/useTvwDemoFeed'
 
-/** Matches `RecordDemoMessage.demo` in tvw-domain. */
+/** Matches `AddDemoEntity.demo` in tvw-domain. */
 const MAX_KEY_LEN = 64
-const DEFAULT_KEYS = ['alpha', 'beta', 'gamma'] as const
 
-const channels = ref<string[]>([...DEFAULT_KEYS])
+const { items, feedByPartition, error, subscriptionActive, isConnected } = useTvwDemoFeedList()
+const {
+  busy: addBusy,
+  error: addCommandError,
+  addDemoEntity,
+} = useAddDemoEntity()
+
 const newKey = ref('')
 const addError = ref('')
 
-function normalizeKey(raw: string): string {
-  return raw.trim()
+const channelKeys = computed(() => {
+  const keys = new Set<string>()
+  for (const it of items.value) {
+    const k = partitionKeyFromFeedItem(it)
+    if (k) keys.add(k)
+  }
+  return [...keys].sort((a, b) => a.localeCompare(b))
+})
+
+function feedFor(demo: string) {
+  return feedByPartition.value[demo] ?? null
 }
 
-function addChannel(): void {
+async function addChannel(): Promise<void> {
   addError.value = ''
-  const k = normalizeKey(newKey.value)
+  const k = newKey.value.trim()
   if (!k) {
     addError.value = 'Enter a non-empty key.'
     return
@@ -24,16 +43,12 @@ function addChannel(): void {
     addError.value = `Key at most ${MAX_KEY_LEN} characters.`
     return
   }
-  if (channels.value.includes(k)) {
+  if (channelKeys.value.includes(k)) {
     addError.value = 'That key is already in the list.'
     return
   }
-  channels.value = [...channels.value, k]
-  newKey.value = ''
-}
-
-function removeChannel(demo: string): void {
-  channels.value = channels.value.filter((c) => c !== demo)
+  const { ok } = await addDemoEntity(k)
+  if (ok) newKey.value = ''
 }
 </script>
 
@@ -42,13 +57,14 @@ function removeChannel(demo: string): void {
     <div class="inner">
       <h1 class="title">Demo feed</h1>
       <p class="lead">
-        <code>RecordDemoMessage</code> with <code>demo</code> tag → <code>DemoMessageRecorded</code> →
-        <code>DemoFeed</code> partition per channel. One live <code>querySubscription</code> per key;
-        recording on one card updates only that partition.
+        <code>AddDemoEntity</code> creates a partition row; <code>RecordDemoMessage</code> appends messages.
+        UI from auto-generated <code>DemoFeed.list</code> via <code>querySubscription</code>.
       </p>
       <ClientOnly>
+        <p v-if="error" class="err">{{ error }}</p>
+        <p v-else-if="isConnected && !subscriptionActive" class="muted">Loading list subscription…</p>
         <div class="toolbar card">
-          <label class="add-label" for="demo-new-key">Add partition key</label>
+          <label class="add-label" for="demo-new-key">Add demo entity</label>
           <div class="add-row">
             <input
               id="demo-new-key"
@@ -58,19 +74,24 @@ function removeChannel(demo: string): void {
               :maxlength="MAX_KEY_LEN"
               placeholder="e.g. staging"
               autocomplete="off"
+              :disabled="addBusy || !isConnected"
               @keyup.enter="addChannel"
             >
-            <button type="button" class="add-btn" @click="addChannel">Add</button>
+            <button type="button" class="add-btn" :disabled="addBusy || !isConnected" @click="addChannel">
+              {{ addBusy ? 'Adding…' : 'Add' }}
+            </button>
           </div>
-          <p v-if="addError" class="add-err">{{ addError }}</p>
-          <p class="add-hint">Max {{ MAX_KEY_LEN }} chars per key. List in memory only — reload resets to defaults.</p>
+          <p v-if="addError || addCommandError" class="err">{{ addError || addCommandError }}</p>
+          <p class="add-hint">Creates a server-side demo entity with zero messages; list updates live.</p>
         </div>
-        <ul v-if="channels.length" class="grid" role="list">
-          <li v-for="c in channels" :key="c" role="listitem" class="grid-item">
-            <DemoFeedChannelCard removable :demo="c" @remove="removeChannel(c)" />
+        <p v-if="isConnected && subscriptionActive && !channelKeys.length" class="muted empty">
+          No projection rows yet — add a demo entity above.
+        </p>
+        <ul v-if="channelKeys.length" class="grid" role="list">
+          <li v-for="c in channelKeys" :key="c" role="listitem" class="grid-item">
+            <DemoFeedChannelCard :demo="c" :feed="feedFor(c)" />
           </li>
         </ul>
-        <p v-else class="empty">No keys — add one above.</p>
         <template #fallback>
           <p class="fallback">Loading demo…</p>
         </template>
@@ -104,7 +125,8 @@ function removeChannel(demo: string): void {
   margin: 0;
   line-height: 1.5;
 }
-.lead code {
+.lead code,
+.empty code {
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 0.88em;
   background: #18181b;
@@ -158,13 +180,13 @@ function removeChannel(demo: string): void {
   background: #3f3f46;
   color: #fafafa;
 }
-.add-btn:hover {
+.add-btn:hover:not(:disabled) {
   background: #52525b;
 }
-.add-err {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: #f87171;
+.add-btn:disabled,
+.add-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .add-hint {
   margin: 0;
@@ -183,10 +205,17 @@ function removeChannel(demo: string): void {
   margin: 0;
   min-width: 0;
 }
+.err {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: #f87171;
+}
 .empty,
-.fallback {
+.fallback,
+.muted {
   font-size: 0.875rem;
   color: #71717a;
   margin: 0;
+  line-height: 1.5;
 }
 </style>

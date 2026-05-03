@@ -12,8 +12,8 @@
     "test": "node -e \"process.exit(0)\""
   },
   "dependencies": {
-    "@tk-dcb/framework": "1.0.5",
-    "@tk-dcb/nuxt": "0.1.4",
+    "@tk-dcb/framework": "1.0.6",
+    "@tk-dcb/nuxt": "0.1.5",
     "@trpc/client": "^11.10.0",
     "@trpc/server": "^11.10.0",
     "argon2": "^0.44.0",

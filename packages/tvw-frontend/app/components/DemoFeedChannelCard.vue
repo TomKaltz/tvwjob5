@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { ref, computed, toRef } from 'vue'
 
+import type { DemoFeedStateType } from 'tvw-domain'
+import { useRecordDemoMessage } from '~/composables/useTvwDemoFeed'
+
 const props = withDefaults(
   defineProps<{
     /** Partition id (`tags.demo`); one persistent feed per id. */
     demo: string
+    /** Live row from `DemoFeed.list` subscription (null until row exists / pending key). */
+    feed: DemoFeedStateType | null
     /** Show remove control (parent drops key from list). */
     removable?: boolean
   }>(),
@@ -16,13 +21,11 @@ const emit = defineEmits<{ remove: [] }>()
 const message = ref('')
 const demoRef = toRef(props, 'demo')
 const {
-  feed,
   error,
   busy,
-  subscriptionActive,
   isConnected,
   recordMessage,
-} = useTvwDemoFeed(demoRef)
+} = useRecordDemoMessage(demoRef)
 
 const errorMessage = computed(() => error.value ?? '')
 
@@ -39,7 +42,7 @@ async function record() {
       <h3 class="channel-title">
         <code>{{ demo }}</code>
       </h3>
-      <span v-if="isConnected && subscriptionActive" class="pill live">Live</span>
+      <span v-if="isConnected && feed" class="pill live">Live</span>
       <span v-else-if="!isConnected" class="pill off">WS off</span>
       <span v-else class="pill wait">Sub…</span>
       <button
@@ -69,7 +72,7 @@ async function record() {
         </button>
       </div>
       <div v-if="errorMessage" class="err">{{ errorMessage }}</div>
-      <dl v-else-if="feed" class="stats">
+      <dl v-else-if="feed != null" class="stats">
         <div><dt>Count</dt><dd>{{ feed.messageCount }}</dd></div>
         <div><dt>Last</dt><dd>{{ feed.lastMessage ?? '—' }}</dd></div>
         <div><dt>At</dt><dd>{{ feed.lastRecordedAt ?? '—' }}</dd></div>

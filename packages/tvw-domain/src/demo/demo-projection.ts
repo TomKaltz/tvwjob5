@@ -1,12 +1,12 @@
 import { z } from 'zod'
 import { createProjection } from '@tk-dcb/framework'
-import { DemoSchemas, GetDemoFeed } from './schemas'
+import { DemoSchemas } from './schemas'
 
 export const DemoFeedState = z.object({
   messageCount: z.number(),
   lastMessage: z.string().nullable(),
   lastRecordedAt: z.string().nullable(),
-  /** Set on read path only; omitted in persisted reducer state. */
+  /** Partition id from event tags (`demo:…`); persisted for list/subscription keys. */
   demo: z.string().optional(),
 })
 
@@ -23,36 +23,30 @@ function initialDemoFeedState(): DemoFeedStateType {
 /** Persistent read model; partition = `tags.demo` (per-channel). */
 export const DemoFeedProjection = createProjection({
   schemas: DemoSchemas,
-  eventTypes: ['DemoMessageRecorded'] as const,
+  eventTypes: ['DemoEntityAdded', 'DemoMessageRecorded'] as const,
   name: 'DemoFeed',
   stateSchema: DemoFeedState,
   initialState: initialDemoFeedState,
   handlers: {
-    DemoMessageRecorded: (state, event) => ({
-      messageCount: state.messageCount + 1,
-      lastMessage: event.data.message,
-      lastRecordedAt: event.timestamp.toISOString(),
-    }),
-  },
-  queries: {
-    GetDemoFeed: {
-      input: GetDemoFeed,
-      dependentProjectionNames: ['DemoFeed'],
-      subscriptionKeySelector: (row) => row?.demo ?? 'global',
-      handler: async (input, ctx): Promise<DemoFeedStateType> => {
-        const id = input.demo
-        try {
-          const result = await ctx.query('DemoFeed.get', { demo: id })
-          const base = result.data as DemoFeedStateType
-          return { ...base, demo: id }
-        } catch (e) {
-          const message = e instanceof Error ? e.message : String(e)
-          if (message.includes('No DemoFeed found')) {
-            return { ...initialDemoFeedState(), demo: id }
-          }
-          throw e
-        }
-      },
+    DemoEntityAdded: (state, event) => {
+      const prefix = 'demo:'
+      const tag = event.tags?.find((t) => t.startsWith(prefix))
+      const demo = tag ? tag.slice(prefix.length) : state.demo
+      return {
+        ...state,
+        ...(demo !== undefined ? { demo } : {}),
+      }
+    },
+    DemoMessageRecorded: (state, event) => {
+      const prefix = 'demo:'
+      const tag = event.tags?.find((t) => t.startsWith(prefix))
+      const demo = tag ? tag.slice(prefix.length) : state.demo
+      return {
+        messageCount: state.messageCount + 1,
+        lastMessage: event.data.message,
+        lastRecordedAt: event.timestamp.toISOString(),
+        ...(demo !== undefined ? { demo } : {}),
+      }
     },
   },
   cache: {

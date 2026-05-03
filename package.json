@@ -2,7 +2,7 @@
   "name": "tvwjob5",
   "version": "1.0.0",
   "private": true,
-  "description": "tvw — tk-dcb framework + Nuxt + tRPC WebSocket (barebones)",
+  "description": "tvw \u2014 tk-dcb framework + Nuxt + tRPC WebSocket (barebones)",
   "scripts": {
     "clean": "find . -type d \\( -name 'dist' -o -name '.nuxt' -o -name '.output' \\) ! -path '*/node_modules/*' -exec rm -rf {} + 2>/dev/null || true",
     "dev": "pnpm run dev:kill; turbo run dev --parallel",

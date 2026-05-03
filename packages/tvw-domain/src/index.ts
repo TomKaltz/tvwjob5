@@ -28,9 +28,9 @@ export const appBuilder = createApp().with(DemoFeatureSlice)
 export type TvwDomainRouter = InferDomainRouterType<typeof appBuilder>
 
 export type TvwQueryCatalog = {
-  GetDemoFeed: {
-    input: { demo: string }
-    output: DemoFeedStateType
+  'DemoFeed.list': {
+    input: { limit?: number; offset?: number; filters?: Record<string, unknown> }
+    output: { items: DemoFeedStateType[]; total: number }
   }
 }
 

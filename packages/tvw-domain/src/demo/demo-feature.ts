@@ -7,6 +7,14 @@ export const DemoFeatureSlice = createFeatureSlice({
   description: 'Smoke-test command + persistent projection',
   schemas: DemoSchemas,
   commandHandlers: {
+    AddDemoEntity: async (data, context) => {
+      const demo = data.demo.trim()
+      context.append({
+        type: 'DemoEntityAdded',
+        data: {},
+        tags: { demo },
+      })
+    },
     RecordDemoMessage: async (data, context) => {
       const demo = data.demo.trim()
       context.append({
