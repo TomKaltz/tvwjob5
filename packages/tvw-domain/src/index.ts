@@ -5,6 +5,7 @@ import {
   InferDomainRouterType,
   type TypedApplication,
 } from '@tk-dcb/framework'
+import { DemoFeatureSlice } from './demo'
 
 /** Resolve tvw-domain SQL migrations dir (monorepo root → packages/tvw-domain/migrations). */
 export function getTvwDomainMigrationsDir(): string {
@@ -18,12 +19,14 @@ export function getTvwDomainMigrationsDir(): string {
   return path.join(dir, 'packages', 'tvw-domain', 'migrations')
 }
 
-/** Builder with zero feature slices — only framework base tRPC (health, command, query, …). */
-export const appBuilder = createApp()
+type TvwFeatureSlices = [typeof DemoFeatureSlice]
+
+/** Builder: Demo slice (command + persistent projection) + framework tRPC. */
+export const appBuilder = createApp().with(DemoFeatureSlice)
 
 export type TvwDomainRouter = InferDomainRouterType<typeof appBuilder>
 
-let tvwApp: TypedApplication<readonly []> | null = null
+let tvwApp: TypedApplication<TvwFeatureSlices> | null = null
 let initializationPromise: Promise<void> | null = null
 
 export interface TvwAppInitOptions {
@@ -54,11 +57,12 @@ export async function initializeTvwApp(options: TvwAppInitOptions): Promise<void
 
   initializationPromise = (async () => {
     tvwApp = await createApp()
+      .with(DemoFeatureSlice)
       .withEventStore(buildEventStoreConfig(options.connectionString, tableName))
       .buildAndInitialize()
 
     if (typeof globalThis !== 'undefined') {
-      ;(globalThis as unknown as { __tvwApp: TypedApplication<readonly []> | null }).__tvwApp =
+      ;(globalThis as unknown as { __tvwApp: TypedApplication<TvwFeatureSlices> | null }).__tvwApp =
         tvwApp
     }
   })()
@@ -74,7 +78,7 @@ export async function closeTvwApp(): Promise<void> {
   }
 }
 
-export function getTvwApp(): TypedApplication<readonly []> {
+export function getTvwApp(): TypedApplication<TvwFeatureSlices> {
   if (tvwApp) return tvwApp
   if (initializationPromise) {
     throw new Error('tvw-domain is initializing; use getTvwAppAsync()')
@@ -82,7 +86,7 @@ export function getTvwApp(): TypedApplication<readonly []> {
   throw new Error('tvw-domain not initialized; call initializeTvwApp() first')
 }
 
-export async function getTvwAppAsync(): Promise<TypedApplication<readonly []>> {
+export async function getTvwAppAsync(): Promise<TypedApplication<TvwFeatureSlices>> {
   if (tvwApp) return tvwApp
   if (initializationPromise) {
     await initializationPromise
@@ -92,3 +96,5 @@ export async function getTvwAppAsync(): Promise<TypedApplication<readonly []>> {
     'tvw-domain not initialized — Nitro plugin should call initializeTvwApp first'
   )
 }
+
+export * from './demo'

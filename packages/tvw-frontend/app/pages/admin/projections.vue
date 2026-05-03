@@ -87,11 +87,14 @@ const rebuildProjection = async (projectionName: string) => {
     if (result.success) {
       rebuildStatuses.value.set(projectionName, {
         status: 'completed',
-        message: result.message || 'Rebuild completed',
+        message:
+          'message' in result && typeof result.message === 'string'
+            ? result.message
+            : 'Rebuild completed',
         timestamp: new Date(),
       })
       successMessage.value =
-        'message' in result && result.message
+        'message' in result && typeof result.message === 'string'
           ? result.message
           : `Projection "${projectionName}" rebuild completed`
       setTimeout(() => {

@@ -24,6 +24,9 @@ importers:
       '@tk-dcb/framework':
         specifier: file:../../../../2025/tk-dcb/packages/tk-dcb-framework
         version: file:../../2025/tk-dcb/packages/tk-dcb-framework(typescript@5.9.3)(zod-openapi@5.4.6(zod@4.3.6))
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@types/node':
         specifier: ^22.10.0
