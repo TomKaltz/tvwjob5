@@ -1,7 +1,15 @@
 import { getUntypedClient } from '@trpc/client'
 import type { TRPCUntypedClient } from '@trpc/client'
 import type { DemoFeedStateType } from 'tvw-domain'
-import { computed, onUnmounted, ref, watch, type Ref } from 'vue'
+import {
+  computed,
+  onUnmounted,
+  ref,
+  toValue,
+  watch,
+  type MaybeRefOrGetter,
+  type Ref,
+} from 'vue'
 
 type FeedStatus = 'idle' | 'loading' | 'ready' | 'error'
 
@@ -58,11 +66,11 @@ function applyUpdate(
 }
 
 /**
- * Live `GetDemoFeed` over tRPC WebSocket.
+ * Live `GetDemoFeed` over tRPC WebSocket for one partition (`input.demo`).
  * Uses `getUntypedClient` + procedure string for `querySubscription` so WS subscriptions
  * are not routed through the lazy Proxy getter chain (reliable delivery of `onData`).
  */
-export function useTvwDemoFeed() {
+export function useTvwDemoFeed(demoId: MaybeRefOrGetter<string>) {
   const $trpc = useTrpc()
   const { isConnected } = useWebSocketConnection()
 
@@ -88,6 +96,12 @@ export function useTvwDemoFeed() {
       return
     }
 
+    const partition = toValue(demoId).trim()
+    if (!partition) {
+      status.value = 'idle'
+      return
+    }
+
     status.value = 'loading'
     error.value = null
 
@@ -96,7 +110,7 @@ export function useTvwDemoFeed() {
       'querySubscription',
       {
         queryName: 'GetDemoFeed',
-        input: { demo: 'global' },
+        input: { demo: partition },
         options: {},
       },
       {
@@ -128,15 +142,19 @@ export function useTvwDemoFeed() {
     }
   }
 
-  watch(isConnected, (connected) => {
-    if (connected) {
-      startSub()
-    } else {
-      clearSub()
-      status.value = 'idle'
-      feed.value = null
-    }
-  }, { immediate: true })
+  watch(
+    [isConnected, () => toValue(demoId)],
+    () => {
+      if (isConnected.value) {
+        startSub()
+      } else {
+        clearSub()
+        status.value = 'idle'
+        feed.value = null
+      }
+    },
+    { immediate: true }
+  )
 
   onUnmounted(() => {
     clearSub()
@@ -145,13 +163,14 @@ export function useTvwDemoFeed() {
   const busy = ref(false)
 
   async function recordMessage(text: string) {
-    if (!text.trim() || !isConnected.value) return { ok: false as const }
+    const partition = toValue(demoId).trim()
+    if (!text.trim() || !partition || !isConnected.value) return { ok: false as const }
     busy.value = true
     error.value = null
     try {
       const result = await $trpc.command.mutate({
         command: 'RecordDemoMessage',
-        input: { message: text.trim() },
+        input: { demo: partition, message: text.trim() },
       })
       if (!result.success) {
         error.value =

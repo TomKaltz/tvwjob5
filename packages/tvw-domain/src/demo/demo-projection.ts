@@ -6,6 +6,8 @@ export const DemoFeedState = z.object({
   messageCount: z.number(),
   lastMessage: z.string().nullable(),
   lastRecordedAt: z.string().nullable(),
+  /** Set on read path only; omitted in persisted reducer state. */
+  demo: z.string().optional(),
 })
 
 export type DemoFeedStateType = z.infer<typeof DemoFeedState>
@@ -18,7 +20,7 @@ function initialDemoFeedState(): DemoFeedStateType {
   }
 }
 
-/** Single-partition demo read model (`tags.demo === 'global'`). */
+/** Persistent read model; partition = `tags.demo` (per-channel). */
 export const DemoFeedProjection = createProjection({
   schemas: DemoSchemas,
   eventTypes: ['DemoMessageRecorded'] as const,
@@ -36,15 +38,17 @@ export const DemoFeedProjection = createProjection({
     GetDemoFeed: {
       input: GetDemoFeed,
       dependentProjectionNames: ['DemoFeed'],
-      subscriptionKeySelector: () => 'global',
+      subscriptionKeySelector: (row) => row?.demo ?? 'global',
       handler: async (input, ctx): Promise<DemoFeedStateType> => {
+        const id = input.demo
         try {
-          const result = await ctx.query('DemoFeed.get', { demo: input.demo })
-          return result.data as DemoFeedStateType
+          const result = await ctx.query('DemoFeed.get', { demo: id })
+          const base = result.data as DemoFeedStateType
+          return { ...base, demo: id }
         } catch (e) {
           const message = e instanceof Error ? e.message : String(e)
           if (message.includes('No DemoFeed found')) {
-            return initialDemoFeedState()
+            return { ...initialDemoFeedState(), demo: id }
           }
           throw e
         }

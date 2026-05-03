@@ -14,6 +14,7 @@ async function logout() {
       <NuxtLink to="/" class="brand">tvw</NuxtLink>
       <div class="links">
         <NuxtLink to="/">Home</NuxtLink>
+        <NuxtLink to="/demo">Demo feed</NuxtLink>
         <NuxtLink to="/admin/streams">Halted streams</NuxtLink>
         <NuxtLink to="/admin/projections">Projections</NuxtLink>
       </div>

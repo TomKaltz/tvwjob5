@@ -2,6 +2,8 @@ import { z } from 'zod'
 import { defineSchemas } from '@tk-dcb/framework'
 
 export const RecordDemoMessage = z.object({
+  /** Projection partition tag (prefix `demo` in persistent store). */
+  demo: z.string().min(1).max(64).default('global'),
   message: z.string().min(1).max(500),
 })
 

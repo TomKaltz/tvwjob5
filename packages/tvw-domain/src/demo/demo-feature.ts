@@ -8,10 +8,11 @@ export const DemoFeatureSlice = createFeatureSlice({
   schemas: DemoSchemas,
   commandHandlers: {
     RecordDemoMessage: async (data, context) => {
+      const demo = data.demo.trim()
       context.append({
         type: 'DemoMessageRecorded',
         data: { message: data.message.trim() },
-        tags: { demo: 'global' },
+        tags: { demo },
       })
     },
   },
