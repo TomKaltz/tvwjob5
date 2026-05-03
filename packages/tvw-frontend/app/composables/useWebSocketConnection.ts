@@ -1,4 +1,6 @@
-export type WsConnectionState = 'idle' | 'connecting' | 'connected' | 'disconnected'
+import type { WsConnectionState } from '@tk-dcb/nuxt/runtime/trpc-ws-plugin'
+
+export type { WsConnectionState }
 
 export function useWebSocketConnection() {
   const state = useState<WsConnectionState>('trpc-ws-connection', () => 'idle')

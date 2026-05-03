@@ -1,59 +1,22 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue'
-import { createLiveQueryHelpers, type QuerySubscriptionClient } from '@tk-dcb/framework/live-query'
-import type { TvwQueryCatalog } from 'tvw-domain'
-
-const $trpc = useTrpc()
-const { isConnected } = useWebSocketConnection()
-
-const { useLiveQuery } = createLiveQueryHelpers<TvwQueryCatalog>(() => ({
-  querySubscription: {
-    subscribe(input, handlers) {
-      return $trpc.querySubscription.subscribe(input, handlers)
-    },
-  },
-}) satisfies QuerySubscriptionClient)
-
-/** Avoid subscribing before client mount + tRPC WS plugin finished wiring (fixes stuck "Waiting…"). */
-const clientMounted = ref(false)
-onMounted(() => {
-  void nextTick(() => {
-    clientMounted.value = true
-  })
-})
-const subscriptionEnabled = computed(() => isConnected.value && clientMounted.value)
+import { ref, computed } from 'vue'
 
 const message = ref('')
-const busy = ref(false)
-const err = ref('')
-const demoFeed = useLiveQuery('GetDemoFeed', { demo: 'global' }, { enabled: subscriptionEnabled })
-const feed = demoFeed.data
-const subscriptionActive = computed(() => demoFeed.status.value === 'ready')
-const errorMessage = computed(() => err.value || demoFeed.error.value?.message || '')
+const {
+  feed,
+  error,
+  busy,
+  subscriptionActive,
+  isConnected,
+  recordMessage,
+} = useTvwDemoFeed()
+
+const errorMessage = computed(() => error.value ?? '')
 
 async function record() {
-  err.value = ''
   const text = message.value.trim()
-  if (!text || !isConnected.value) return
-  busy.value = true
-  try {
-    const result = await $trpc.command.mutate({
-      command: 'RecordDemoMessage',
-      input: { message: text },
-    })
-    if (!result.success) {
-      err.value =
-        'error' in result && typeof result.error === 'string'
-          ? result.error
-          : 'Command failed'
-      return
-    }
-    message.value = ''
-  } catch (e) {
-    err.value = e instanceof Error ? e.message : 'Mutation failed'
-  } finally {
-    busy.value = false
-  }
+  const { ok } = await recordMessage(text)
+  if (ok) message.value = ''
 }
 </script>
 
