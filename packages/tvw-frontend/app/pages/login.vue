@@ -87,8 +87,10 @@ async function onSubmit() {
   background: rgba(24, 24, 27, 0.6);
 }
 h1 {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: var(--text-page-title);
+  font-weight: 700;
+  letter-spacing: var(--tracking-tight);
+  line-height: 1.25;
   margin: 0;
 }
 label {
@@ -97,8 +99,9 @@ label {
   gap: 0.25rem;
 }
 label span {
-  font-size: 0.875rem;
-  color: #a1a1aa;
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: #b4b4bd;
 }
 input {
   border: 1px solid #3f3f46;
@@ -106,10 +109,12 @@ input {
   background: #09090b;
   color: inherit;
   padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
+  font-size: var(--text-body);
+  font-weight: 500;
+  letter-spacing: var(--tracking-ui);
 }
 .err {
-  font-size: 0.875rem;
+  font-size: var(--text-body);
   color: #f87171;
   margin: 0;
 }
@@ -118,8 +123,9 @@ button {
   border: none;
   border-radius: 0.25rem;
   padding: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: var(--text-body);
+  font-weight: 600;
+  letter-spacing: var(--tracking-ui);
   background: #059669;
   color: #fff;
   cursor: pointer;

@@ -5,6 +5,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
+  css: ['~/assets/css/main.css'],
   devtools: { enabled: true },
   nitro: {
     preset: 'node-server',

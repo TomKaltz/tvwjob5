@@ -1,8 +1,22 @@
+import * as path from 'path'
+import * as fs from 'fs'
 import {
   createApp,
   InferDomainRouterType,
   type TypedApplication,
 } from '@tk-dcb/framework'
+
+/** Resolve tvw-domain SQL migrations dir (monorepo root → packages/tvw-domain/migrations). */
+export function getTvwDomainMigrationsDir(): string {
+  let dir = __dirname
+  while (dir !== path.dirname(dir)) {
+    if (fs.existsSync(path.join(dir, 'pnpm-workspace.yaml'))) {
+      return path.join(dir, 'packages', 'tvw-domain', 'migrations')
+    }
+    dir = path.dirname(dir)
+  }
+  return path.join(dir, 'packages', 'tvw-domain', 'migrations')
+}
 
 /** Builder with zero feature slices — only framework base tRPC (health, command, query, …). */
 export const appBuilder = createApp()
@@ -25,6 +39,7 @@ function buildEventStoreConfig(connectionString: string, tableName: string) {
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,
     tableName,
+    migrationsDir: getTvwDomainMigrationsDir(),
   }
 }
 

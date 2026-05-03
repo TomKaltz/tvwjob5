@@ -43,7 +43,9 @@ async function logout() {
   background: #0c0c0e;
 }
 .brand {
-  font-weight: 600;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: var(--tracking-tight);
   color: #fafafa;
   text-decoration: none;
   margin-right: 0.5rem;
@@ -55,24 +57,28 @@ async function logout() {
   flex: 1;
 }
 .links a {
-  color: #a1a1aa;
+  color: #b4b4bd;
   text-decoration: none;
-  font-size: 0.875rem;
+  font-size: var(--text-body);
+  font-weight: 600;
+  letter-spacing: var(--tracking-ui);
 }
 .links a:hover,
 .links a.router-link-active {
-  color: #e4e4e7;
+  color: #f4f4f5;
 }
 .logout {
   margin-left: auto;
   background: none;
   border: none;
-  color: #a1a1aa;
-  font-size: 0.875rem;
+  color: #b4b4bd;
+  font-size: var(--text-body);
+  font-weight: 600;
+  letter-spacing: var(--tracking-ui);
   cursor: pointer;
 }
 .logout:hover {
-  color: #e4e4e7;
+  color: #f4f4f5;
 }
 .main {
   flex: 1;

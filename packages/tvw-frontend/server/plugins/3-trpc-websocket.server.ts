@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 import { applyWSSHandler } from '@trpc/server/adapters/ws'
 import { WebSocketServer } from 'ws'
 import {
+  ANONYMOUS_ACTOR_ID,
   createTrpcContext,
   createTrpcRouter,
   type ActorMetadata,
@@ -56,8 +57,18 @@ export default defineNitroPlugin(async (nitroApp) => {
             (typeof params.accessToken === 'string' && params.accessToken) ||
             null
 
+          const socketMeta = {
+            ipAddress: req?.socket?.remoteAddress ?? undefined,
+            userAgent: req?.headers?.['user-agent'] as string | undefined,
+          }
+
           if (!rawToken) {
-            throw new Error('UNAUTHORIZED: Missing token')
+            const actor: ActorMetadata = {
+              id: ANONYMOUS_ACTOR_ID,
+              name: 'Anonymous',
+              ...socketMeta,
+            }
+            return createTrpcContext(tvwApp.underlyingApp, { actor })
           }
 
           let sub: string
@@ -77,8 +88,7 @@ export default defineNitroPlugin(async (nitroApp) => {
           const actor: ActorMetadata = {
             id: sub,
             name: username,
-            ipAddress: req?.socket?.remoteAddress ?? undefined,
-            userAgent: req?.headers?.['user-agent'] as string | undefined,
+            ...socketMeta,
           }
 
           const metadata: CommandExecutionMetadata = { actor }

@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'tvw_auth_token'
 
-export default defineNuxtPlugin(() => {
+function tvwAuthTokenPlugin() {
   const token = useState<string | null>('tvw-auth-token', () => null)
   if (token.value) return
   try {
@@ -9,4 +9,8 @@ export default defineNuxtPlugin(() => {
   } catch {
     /* sessionStorage unavailable */
   }
-})
+}
+
+export default defineNuxtPlugin(
+  Object.assign(tvwAuthTokenPlugin, { _name: 'tvw-auth-token' })
+)
