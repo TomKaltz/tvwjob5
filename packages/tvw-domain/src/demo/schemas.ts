@@ -9,6 +9,10 @@ export const DemoMessageRecorded = z.object({
   message: z.string(),
 })
 
+export const GetDemoFeed = z.object({
+  demo: z.string().min(1).default('global'),
+})
+
 export const DemoSchemas = defineSchemas({
   commands: {
     RecordDemoMessage,
@@ -18,5 +22,8 @@ export const DemoSchemas = defineSchemas({
       data: DemoMessageRecorded,
       tags: ['demo'] as const,
     },
+  },
+  queries: {
+    GetDemoFeed,
   },
 })

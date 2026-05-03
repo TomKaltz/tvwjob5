@@ -8,10 +8,12 @@
     "dev": "nuxt dev",
     "start": "node .output/server/index.mjs",
     "postinstall": "nuxt prepare",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "test": "node -e \"process.exit(0)\""
   },
   "dependencies": {
-    "@tk-dcb/framework": "1.0.0",
+    "@tk-dcb/framework": "1.0.5",
+    "@tk-dcb/nuxt": "0.1.0",
     "@trpc/client": "^11.10.0",
     "@trpc/server": "^11.10.0",
     "argon2": "^0.44.0",

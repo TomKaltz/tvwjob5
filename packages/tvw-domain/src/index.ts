@@ -6,6 +6,7 @@ import {
   type TypedApplication,
 } from '@tk-dcb/framework'
 import { DemoFeatureSlice } from './demo'
+import type { DemoFeedStateType } from './demo'
 
 /** Resolve tvw-domain SQL migrations dir (monorepo root → packages/tvw-domain/migrations). */
 export function getTvwDomainMigrationsDir(): string {
@@ -25,6 +26,13 @@ type TvwFeatureSlices = [typeof DemoFeatureSlice]
 export const appBuilder = createApp().with(DemoFeatureSlice)
 
 export type TvwDomainRouter = InferDomainRouterType<typeof appBuilder>
+
+export type TvwQueryCatalog = {
+  GetDemoFeed: {
+    input: { demo: string }
+    output: DemoFeedStateType
+  }
+}
 
 let tvwApp: TypedApplication<TvwFeatureSlices> | null = null
 let initializationPromise: Promise<void> | null = null

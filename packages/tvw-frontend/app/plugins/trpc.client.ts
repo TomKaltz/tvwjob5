@@ -27,6 +27,8 @@ function trpcClientPlugin() {
   }
 
   const config = useRuntimeConfig()
+  const tkDcbDebug = () =>
+    Boolean((config.public as { tkDcbDebug?: boolean }).tkDcbDebug)
 
   const wsUrl = () => {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
@@ -60,10 +62,12 @@ function trpcClientPlugin() {
         return tok ? { token: tok } : {}
       },
       onOpen: () => {
+        if (tkDcbDebug()) console.debug('[tvw trpc ws] open', wsUrl())
         connectionReady = true
         wsConnectionState.value = 'connected'
       },
       onClose: (event) => {
+        if (tkDcbDebug()) console.debug('[tvw trpc ws] close', event?.code, event)
         connectionReady = false
         wsConnectionState.value = 'disconnected'
         const code = event?.code
@@ -80,7 +84,8 @@ function trpcClientPlugin() {
           client = null
         }
       },
-      onError: () => {
+      onError: (err) => {
+        if (tkDcbDebug()) console.debug('[tvw trpc ws] error', err)
         connectionReady = false
         wsConnectionState.value = 'disconnected'
       },

@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken'
 import { applyWSSHandler } from '@trpc/server/adapters/ws'
 import { WebSocketServer } from 'ws'
 import {
-  ANONYMOUS_ACTOR_ID,
   createTrpcContext,
   createTrpcRouter,
   type ActorMetadata,
@@ -10,6 +9,9 @@ import {
 } from '@tk-dcb/framework'
 import { getTvwAppAsync } from 'tvw-domain'
 import { getAuthSecret } from '../utils/auth-jwt'
+
+/** Unauthenticated WS connections; not part of framework API (only SYSTEM_ACTOR exists there). */
+const ANONYMOUS_ACTOR_ID = 'anonymous'
 
 let attached = false
 

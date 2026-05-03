@@ -6,10 +6,11 @@
   "scripts": {
     "clean": "find . -type d \\( -name 'dist' -o -name '.nuxt' -o -name '.output' \\) ! -path '*/node_modules/*' -exec rm -rf {} + 2>/dev/null || true",
     "dev": "pnpm run dev:kill; turbo run dev --parallel",
-    "dev:kill": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true; pkill -f 'pnpm.*--filter.*tvw-frontend.*dev' 2>/dev/null || true",
+    "dev:kill": "bash scripts/dev-kill.sh",
     "dev:frontend": "pnpm --filter tvw-frontend dev",
     "dev:domain": "pnpm --filter tvw-domain dev",
     "build": "turbo run build",
+    "test": "turbo run test",
     "typecheck": "turbo run typecheck"
   },
   "engines": {
@@ -18,8 +19,7 @@
   "packageManager": "pnpm@10.29.2",
   "pnpm": {
     "overrides": {
-      "@nuxt/kit": "^4.2.1",
-      "@tk-dcb/framework": "file:../../2025/tk-dcb/packages/tk-dcb-framework"
+      "@nuxt/kit": "^4.2.1"
     },
     "onlyBuiltDependencies": [
       "argon2",

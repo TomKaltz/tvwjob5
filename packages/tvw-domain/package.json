@@ -8,10 +8,11 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch --preserveWatchOutput",
+    "test": "node -e \"process.exit(0)\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@tk-dcb/framework": "1.0.0",
+    "@tk-dcb/framework": "1.0.5",
     "zod": "^4.3.6"
   },
   "devDependencies": {
