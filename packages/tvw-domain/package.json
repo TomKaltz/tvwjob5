@@ -13,10 +13,10 @@
   },
   "dependencies": {
     "@tk-dcb/framework": "1.0.5",
-    "zod": "^4.3.6"
+    "zod": "^4.4.2"
   },
   "devDependencies": {
-    "@types/node": "^22.10.0",
+    "@types/node": "^22.19.17",
     "typescript": "^5.9.3"
   }
 }

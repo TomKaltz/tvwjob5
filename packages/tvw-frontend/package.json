@@ -14,21 +14,21 @@
   "dependencies": {
     "@tk-dcb/framework": "1.0.7",
     "@tk-dcb/nuxt": "0.1.5",
-    "@trpc/client": "^11.10.0",
-    "@trpc/server": "^11.10.0",
+    "@trpc/client": "^11.17.0",
+    "@trpc/server": "^11.17.0",
     "argon2": "^0.44.0",
     "jsonwebtoken": "^9.0.3",
-    "nuxt": "^4.3.1",
-    "postgres": "^3.4.8",
+    "nuxt": "^4.4.4",
+    "postgres": "^3.4.9",
     "tvw-domain": "workspace:*",
     "typescript": "^5.9.3",
-    "ws": "^8.19.0",
-    "zod": "^4.3.6"
+    "ws": "^8.20.0",
+    "zod": "^4.4.2"
   },
   "devDependencies": {
     "@fontsource-variable/geist-mono": "^5.2.7",
     "@fontsource-variable/plus-jakarta-sans": "^5.2.8",
     "@types/jsonwebtoken": "^9.0.10",
-    "vue-tsc": "^2.2.10"
+    "vue-tsc": "^2.2.12"
   }
 }
