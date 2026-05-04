@@ -26,6 +26,7 @@
     "zod": "^4.4.2"
   },
   "devDependencies": {
+    "tsx": "^4.21.0",
     "@fontsource-variable/geist-mono": "^5.2.7",
     "@fontsource-variable/plus-jakarta-sans": "^5.2.8",
     "@types/jsonwebtoken": "^9.0.10",

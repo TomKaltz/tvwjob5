@@ -12,6 +12,11 @@ import {
 import { closeTvwApp, getTvwAppAsync, initializeTvwApp } from 'tvw-domain'
 import { getAuthSecret } from '../utils/auth-jwt'
 import { getDatabaseUrl } from '../utils/db-url'
+import {
+  getEventBus,
+  startTvwProcessorWorkers,
+  stopTvwProcessorWorkers,
+} from '../utils/tvw-processor-workers'
 
 const ANONYMOUS_ACTOR_ID = 'anonymous'
 
@@ -48,9 +53,12 @@ export default defineNitroPlugin(async (nitroApp) => {
   await initializeTvwApp({
     connectionString: getDatabaseUrl(),
     tableName: process.env.TVW_EVENTS_TABLE || 'tvw_events',
+    eventBus: getEventBus(),
   })
+  await startTvwProcessorWorkers()
 
   nitroApp.hooks.hook('close', async () => {
+    await stopTvwProcessorWorkers()
     await closeTvwApp()
   })
 

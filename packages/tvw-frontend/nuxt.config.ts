@@ -7,9 +7,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   modules: [tkDcb],
-  /** Set `NUXT_PUBLIC_TK_DCB_DEBUG=1` for WS / tk-dcb console.debug noise. */
   tkDcb: {
-    debug: process.env.NUXT_PUBLIC_TK_DCB_DEBUG === '1',
+    debug: false,
   },
   css: ['~/assets/css/main.css'],
   devtools: { enabled: true },

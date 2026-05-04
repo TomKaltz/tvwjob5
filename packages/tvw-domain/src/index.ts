@@ -2,7 +2,9 @@ import * as path from 'path'
 import * as fs from 'fs'
 import {
   createApp,
+  createIpcEventBus,
   InferDomainRouterType,
+  type EventBus,
   type TypedApplication,
 } from '@tk-dcb/framework'
 import { DemoFeatureSlice } from './demo'
@@ -41,6 +43,8 @@ export interface TvwAppInitOptions {
   connectionString: string
   /** Event store table name (default tvw_events). */
   tableName?: string
+  /** Shared IPC bus (Nitro main + forked processor worker). Required for admin projection rebuild. */
+  eventBus?: EventBus
 }
 
 function buildEventStoreConfig(connectionString: string, tableName: string) {
@@ -64,9 +68,11 @@ export async function initializeTvwApp(options: TvwAppInitOptions): Promise<void
   const tableName = options.tableName || 'tvw_events'
 
   initializationPromise = (async () => {
+    const eventBus = options.eventBus ?? createIpcEventBus({ debug: false })
     tvwApp = await createApp()
       .with(DemoFeatureSlice)
       .withEventStore(buildEventStoreConfig(options.connectionString, tableName))
+      .withEventBus(eventBus)
       .buildAndInitialize()
 
     if (typeof globalThis !== 'undefined') {
